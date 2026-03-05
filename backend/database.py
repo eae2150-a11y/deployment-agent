@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 from typing import Optional
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "deployment_agent.db")
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "deployment_agent.db")
 
 STAGES = ["Prospect", "Discovery", "Technical", "Pilot", "Legal & Procurement", "Deployment", "Live"]
 

@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.database import (
@@ -73,6 +74,11 @@ EMPTY_PLAN = {
     "risk_flags": "", "next_meeting_agenda": "", "technical_email": "",
     "executive_email": "",
 }
+
+
+@app.get("/")
+async def root():
+    return FileResponse("frontend/index.html")
 
 
 @app.get("/health")
