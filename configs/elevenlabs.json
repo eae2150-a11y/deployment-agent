@@ -1,0 +1,49 @@
+{
+  "company": "ElevenLabs",
+  "role": "Forward Deployed Engineer Strategist",
+  "product_context": "ElevenLabs is the leading AI voice technology company. Core products: Text-to-Speech API (ultra-realistic voices in 29 languages), Voice Cloning (professional and instant cloning), Voice Library (community marketplace), AI Dubbing (automatic video/audio translation), and Conversational AI agents. Key integrations: REST API, Python/JS SDKs, WebSocket streaming, partnerships with enterprise platforms. Used for content creation, customer support automation, accessibility, gaming, media localization, and IVR systems.",
+  "deal_stages": [
+    "Discovery",
+    "Technical Evaluation",
+    "Pilot",
+    "Negotiation",
+    "Deployment"
+  ],
+  "question_banks": {
+    "Discovery": [
+      "What voice/audio workflows does your team manage today?",
+      "How many languages do you need to support?",
+      "What's your current TTS or voice solution?",
+      "What's the volume of audio content you produce monthly?",
+      "Who owns the voice/audio pipeline internally?"
+    ],
+    "Technical Evaluation": [
+      "What's your current API infrastructure look like?",
+      "Do you need real-time streaming or batch processing?",
+      "What latency requirements do you have for voice generation?",
+      "How do you handle content moderation for generated audio?",
+      "What's your deployment environment (cloud, on-prem, hybrid)?"
+    ],
+    "Pilot": [
+      "Which use case should we prioritize for the pilot?",
+      "What does success look like in the first 30 days?",
+      "Who on your team will be the technical lead for integration?",
+      "What volume of API calls do you expect during the pilot?",
+      "How will you measure quality of the generated voice output?"
+    ],
+    "Negotiation": [
+      "What's your budget range for voice AI infrastructure?",
+      "Do you need an enterprise SLA or dedicated support?",
+      "Are there compliance or data residency requirements?",
+      "What's your procurement timeline?",
+      "Would a multi-year commitment work for better pricing?"
+    ],
+    "Deployment": [
+      "What's your rollout plan across teams/products?",
+      "Do you need custom voice models or fine-tuning?",
+      "How will you monitor usage and quality in production?",
+      "What training does your team need on the API?",
+      "Who should be the ongoing technical point of contact?"
+    ]
+  }
+}

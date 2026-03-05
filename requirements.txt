@@ -1,0 +1,6 @@
+anthropic
+tavily-python
+fastapi
+uvicorn
+python-dotenv
+aiosqlite

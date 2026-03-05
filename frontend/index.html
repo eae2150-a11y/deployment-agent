@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElevenLabs FDE Workspace</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #08080d;
+            color: #e0e0e8;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Top bar */
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 28px; border-bottom: 1px solid #1a1a28; background: #0c0c14;
+        }
+        .topbar h1 {
+            font-size: 18px; font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .topbar .subtitle { font-size: 12px; color: #555568; }
+
+        /* Tabs */
+        .tabs {
+            display: flex; gap: 0; background: #0c0c14;
+            border-bottom: 1px solid #1a1a28; padding: 0 28px;
+        }
+        .tab {
+            padding: 12px 24px; font-size: 13px; font-weight: 600; color: #555568;
+            cursor: pointer; border-bottom: 2px solid transparent;
+            transition: color 0.15s, border-color 0.15s; user-select: none;
+        }
+        .tab:hover { color: #8888a0; }
+        .tab.active { color: #a78bfa; border-bottom-color: #7c3aed; }
+
+        /* Layout */
+        .workspace { max-width: 900px; margin: 0 auto; height: calc(100vh - 97px); }
+        .panel { overflow-y: auto; padding: 28px; height: 100%; display: none; }
+        .panel.active { display: block; }
+
+        /* Cards */
+        .card {
+            background: #111119; border: 1px solid #1e1e2e;
+            border-radius: 12px; padding: 24px; margin-bottom: 20px;
+        }
+
+        /* Forms */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+        .form-row.tri { grid-template-columns: 1fr 1fr 1fr; }
+        .form-row.single { grid-template-columns: 1fr; }
+
+        .field label {
+            display: block; font-size: 11px; font-weight: 600; color: #6b6b80;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+        }
+        .field input, .field select, .field textarea {
+            width: 100%; padding: 10px 14px; background: #08080d;
+            border: 1px solid #2a2a3a; border-radius: 8px; color: #e0e0e8;
+            font-size: 14px; font-family: inherit; transition: border-color 0.2s; appearance: none;
+        }
+        .field input::placeholder, .field textarea::placeholder { color: #333348; }
+        .field input:focus, .field select:focus, .field textarea:focus {
+            outline: none; border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
+        }
+        .field select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b6b80' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 14px center;
+            padding-right: 36px; cursor: pointer;
+        }
+        .field select option { background: #111119; color: #e0e0e8; }
+        .field textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+
+        /* Buttons */
+        .btn {
+            width: 100%; padding: 11px; border: none; border-radius: 8px;
+            font-size: 13px; font-weight: 600; font-family: inherit;
+            cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+        }
+        .btn:hover { opacity: 0.88; }
+        .btn:active { transform: scale(0.99); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .btn-primary { background: linear-gradient(135deg, #7c3aed, #3b82f6); color: #fff; }
+        .btn-secondary { background: #1e1e2e; color: #c0c0d0; }
+        .btn-small { width: auto; padding: 7px 16px; font-size: 12px; }
+        .btn-danger { background: rgba(239,68,68,0.15); color: #f87171; }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+        .btn-outline {
+            background: transparent; border: 1px solid #2a2a3a; color: #8888a0;
+            width: auto; padding: 6px 14px; font-size: 12px;
+        }
+        .btn-outline:hover { border-color: #7c3aed; color: #a78bfa; }
+        .btn-copy {
+            background: #1a1a28; border: 1px solid #2a2a3a; color: #8888a0;
+            width: auto; padding: 5px 12px; font-size: 11px; border-radius: 6px;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .btn-copy:hover { border-color: #7c3aed; color: #a78bfa; }
+
+        /* Loading */
+        .loading-block { display: none; text-align: center; padding: 36px 20px; }
+        .loading-block.active { display: block; }
+        .spinner {
+            width: 32px; height: 32px; border: 3px solid #1e1e2e;
+            border-top-color: #a78bfa; border-radius: 50%;
+            animation: spin 0.7s linear infinite; margin: 0 auto 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-block p { font-size: 13px; color: #6b6b80; }
+        .agents-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
+        .agent-tag {
+            font-size: 11px; padding: 3px 10px; background: #1a1a28; border: 1px solid #2a2a3a;
+            border-radius: 16px; color: #6b6b80; animation: pulse 1.5s ease-in-out infinite;
+        }
+        .agent-tag:nth-child(2) { animation-delay: 0.12s; }
+        .agent-tag:nth-child(3) { animation-delay: 0.24s; }
+        .agent-tag:nth-child(4) { animation-delay: 0.36s; }
+        .agent-tag:nth-child(5) { animation-delay: 0.48s; }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        /* Error */
+        .error-msg {
+            display: none; padding: 12px 16px; background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px;
+            color: #f87171; font-size: 13px; margin-bottom: 16px;
+        }
+        .error-msg.active { display: block; }
+
+        /* Brief result */
+        .brief-result { display: none; }
+        .brief-result.active { display: block; }
+        .brief-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #1e1e2e;
+        }
+        .brief-header h3 { font-size: 15px; font-weight: 600; }
+        .brief-meta { font-size: 11px; color: #555568; }
+
+        /* Markdown */
+        .md h1, .md h2, .md h3, .md h4 { color: #e0e0e8; margin-top: 20px; margin-bottom: 8px; line-height: 1.3; }
+        .md h1 { font-size: 20px; border-bottom: 1px solid #1e1e2e; padding-bottom: 8px; }
+        .md h2 { font-size: 16px; border-bottom: 1px solid #1e1e2e; padding-bottom: 6px; }
+        .md h3 { font-size: 14px; }
+        .md h4 { font-size: 13px; color: #a78bfa; }
+        .md p { margin-bottom: 10px; color: #b8b8c8; font-size: 13px; }
+        .md ul, .md ol { margin: 6px 0 12px 20px; color: #b8b8c8; font-size: 13px; }
+        .md li { margin-bottom: 3px; }
+        .md strong { color: #e0e0e8; }
+        .md blockquote {
+            border-left: 3px solid #7c3aed; padding: 6px 14px; margin: 10px 0;
+            background: rgba(124, 58, 237, 0.05); border-radius: 0 6px 6px 0;
+            font-size: 13px; color: #a0a0b4;
+        }
+        .md table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+        .md th { text-align: left; padding: 8px 12px; background: #1a1a28; border: 1px solid #2a2a3a; color: #a78bfa; font-weight: 600; }
+        .md td { padding: 8px 12px; border: 1px solid #1e1e2e; color: #b8b8c8; }
+        .md code { font-family: 'JetBrains Mono', monospace; background: #1a1a28; padding: 2px 5px; border-radius: 4px; font-size: 12px; color: #a78bfa; }
+        .md pre { background: #08080d; border: 1px solid #1e1e2e; border-radius: 8px; padding: 14px; overflow-x: auto; margin: 10px 0; }
+        .md pre code { background: none; padding: 0; }
+        .md hr { border: none; border-top: 1px solid #1e1e2e; margin: 20px 0; }
+
+        /* Stage dots */
+        .stage-dot {
+            display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px;
+        }
+
+        /* Stage group */
+        .stage-group { margin-bottom: 24px; }
+        .stage-group-header {
+            font-size: 11px; font-weight: 700; color: #555568; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+        }
+
+        /* Project list */
+        .project-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; background: #111119; border: 1px solid #1e1e2e;
+            border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s;
+        }
+        .project-item:hover { border-color: #7c3aed; }
+        .project-item .name { font-size: 14px; font-weight: 600; }
+        .project-item .meta { font-size: 11px; color: #555568; }
+        .project-item .right { display: flex; align-items: center; gap: 10px; }
+        .delete-btn {
+            background: none; border: none; color: #444458; cursor: pointer;
+            font-size: 14px; padding: 4px 6px; border-radius: 4px; transition: all 0.15s;
+        }
+        .delete-btn:hover { color: #f87171; background: rgba(239,68,68,0.1); }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: #444458; font-size: 13px; }
+
+        /* Project detail */
+        .project-detail { display: none; }
+        .project-detail.active { display: block; }
+        .back-link {
+            font-size: 12px; color: #6b6b80; cursor: pointer; margin-bottom: 16px;
+            display: inline-block; transition: color 0.15s;
+        }
+        .back-link:hover { color: #a78bfa; }
+
+        .detail-header {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            margin-bottom: 24px; gap: 16px;
+        }
+        .detail-header-left h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .detail-header-left .meta { font-size: 12px; color: #555568; }
+        .detail-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+        .plan-section { margin-bottom: 20px; }
+        .plan-section-header {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+        }
+        .plan-section-title {
+            font-size: 12px; font-weight: 600; color: #a78bfa; text-transform: uppercase;
+            letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
+        }
+        .plan-section-icon { font-size: 14px; }
+        .plan-section-body {
+            background: #0c0c14; border: 1px solid #1a1a28; border-radius: 8px;
+            padding: 16px; font-size: 13px; color: #b8b8c8; min-height: 50px;
+        }
+
+        .email-section { margin-bottom: 20px; }
+        .email-header {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+        }
+        .email-title {
+            font-size: 12px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
+        }
+        .email-title.tech { color: #60a5fa; }
+        .email-title.exec { color: #f59e0b; }
+        .email-body {
+            background: #0c0c14; border: 1px solid #1a1a28; border-radius: 8px;
+            padding: 16px; font-size: 13px; color: #b8b8c8; white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .log-entry {
+            padding: 10px 14px; background: #0c0c14; border: 1px solid #1a1a28;
+            border-radius: 8px; margin-bottom: 8px; font-size: 12px;
+        }
+        .log-entry .log-date { font-weight: 600; color: #8888a0; margin-bottom: 4px; font-size: 11px; }
+        .log-entry .log-notes { color: #999; white-space: pre-wrap; }
+
+        .section-label {
+            font-size: 12px; font-weight: 600; color: #555568; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 10px; margin-top: 24px;
+        }
+
+        .divider { border: none; border-top: 1px solid #1a1a28; margin: 28px 0; }
+
+        @media (max-width: 600px) {
+            .workspace { padding: 0; }
+            .panel { padding: 20px 16px; }
+            .tabs { padding: 0 16px; }
+            .form-row.tri { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div>
+            <h1>ElevenLabs FDE Workspace</h1>
+            <span class="subtitle">Forward Deployed Engineer Strategist</span>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="research">New Prospect Research</div>
+        <div class="tab" data-tab="projects">Active Projects</div>
+    </div>
+
+    <div class="workspace">
+        <!-- RESEARCH PANEL -->
+        <div class="panel active" id="tab-research">
+            <div class="card">
+                <form id="research-form">
+                    <div class="form-row">
+                        <div class="field">
+                            <label>Company Name</label>
+                            <input type="text" id="company" placeholder="e.g. Duolingo" required>
+                        </div>
+                        <div class="field">
+                            <label>Target Role</label>
+                            <select id="role" required>
+                                <option value="" disabled selected>Select role</option>
+                                <option value="Deployment Strategist">Deployment Strategist</option>
+                                <option value="Solutions Engineer">Solutions Engineer</option>
+                                <option value="Customer Success">Customer Success</option>
+                                <option value="Head of Partnerships">Head of Partnerships</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="research-btn">Generate Brief</button>
+                </form>
+            </div>
+
+            <div class="loading-block" id="research-loading">
+                <div class="spinner"></div>
+                <p>Running 5 agents in parallel...</p>
+                <div class="agents-list">
+                    <span class="agent-tag">Company Intel</span>
+                    <span class="agent-tag">Use Cases</span>
+                    <span class="agent-tag">Stakeholders</span>
+                    <span class="agent-tag">Objections</span>
+                    <span class="agent-tag">Playbook</span>
+                </div>
+            </div>
+
+            <div class="error-msg" id="research-error"></div>
+
+            <div class="card brief-result" id="brief-result">
+                <div class="brief-header">
+                    <h3>Deployment Brief</h3>
+                    <span class="brief-meta" id="brief-meta"></span>
+                </div>
+                <div class="md" id="brief-body"></div>
+                <div style="margin-top:20px;padding-top:16px;border-top:1px solid #1e1e2e">
+                    <button class="btn btn-primary" id="save-project-btn" style="max-width:320px">&#128194; Save to Active Projects</button>
+                    <div id="save-project-msg" style="display:none;margin-top:10px;font-size:13px;color:#22c55e"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECTS PANEL -->
+        <div class="panel" id="tab-projects">
+            <div id="projects-view">
+                <div class="card">
+                    <form id="new-project-form">
+                        <div class="form-row tri">
+                            <div class="field">
+                                <label>Client Name</label>
+                                <input type="text" id="proj-client" placeholder="e.g. Spotify" required>
+                            </div>
+                            <div class="field">
+                                <label>Industry</label>
+                                <input type="text" id="proj-industry" placeholder="e.g. Music Streaming" required>
+                            </div>
+                            <div class="field">
+                                <label>Stage</label>
+                                <select id="proj-stage"></select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Create Project</button>
+                    </form>
+                </div>
+                <div id="projects-list"></div>
+            </div>
+
+            <div class="project-detail" id="project-detail">
+                <span class="back-link" id="back-btn">&#8592; All Projects</span>
+
+                <div class="detail-header">
+                    <div class="detail-header-left">
+                        <h2 id="detail-name"></h2>
+                        <span class="meta" id="detail-meta"></span>
+                    </div>
+                    <div class="detail-header-right">
+                        <div class="field" style="margin:0">
+                            <select id="detail-stage-select" style="font-size:12px;padding:6px 32px 6px 10px"></select>
+                        </div>
+                        <button class="btn btn-outline" id="next-stage-btn">Next Stage &#8594;</button>
+                    </div>
+                </div>
+
+                <!-- 5 Plan sections -->
+                <div class="plan-section">
+                    <div class="plan-section-header">
+                        <div class="plan-section-title"><span class="plan-section-icon">&#9881;</span> Integration Map</div>
+                    </div>
+                    <div class="plan-section-body md" id="plan-integration"></div>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-header">
+                        <div class="plan-section-title"><span class="plan-section-icon">&#128101;</span> Stakeholder Tracker</div>
+                    </div>
+                    <div class="plan-section-body md" id="plan-stakeholders"></div>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-header">
+                        <div class="plan-section-title"><span class="plan-section-icon">&#10067;</span> Open Questions</div>
+                    </div>
+                    <div class="plan-section-body md" id="plan-questions"></div>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-header">
+                        <div class="plan-section-title"><span class="plan-section-icon">&#9888;</span> Risk Flags</div>
+                    </div>
+                    <div class="plan-section-body md" id="plan-risks"></div>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-header">
+                        <div class="plan-section-title"><span class="plan-section-icon">&#128197;</span> Next Meeting Agenda</div>
+                    </div>
+                    <div class="plan-section-body md" id="plan-agenda"></div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Draft emails -->
+                <div class="email-section">
+                    <div class="email-header">
+                        <div class="email-title tech"><span class="plan-section-icon">&#9993;</span> Technical Follow-Up Email</div>
+                        <button class="btn-copy" onclick="copyEmail('plan-email-tech')">Copy</button>
+                    </div>
+                    <div class="email-body" id="plan-email-tech"></div>
+                </div>
+                <div class="email-section">
+                    <div class="email-header">
+                        <div class="email-title exec"><span class="plan-section-icon">&#9993;</span> Executive Follow-Up Email</div>
+                        <button class="btn-copy" onclick="copyEmail('plan-email-exec')">Copy</button>
+                    </div>
+                    <div class="email-body" id="plan-email-exec"></div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Call logs -->
+                <div class="section-label">Call History</div>
+                <div id="call-logs"></div>
+
+                <!-- New log form -->
+                <div class="card" style="margin-top:16px">
+                    <div class="section-label" style="margin-top:0">Log New Call</div>
+                    <div class="form-row">
+                        <div class="field">
+                            <label>Date</label>
+                            <input type="date" id="log-date" required>
+                        </div>
+                        <div></div>
+                    </div>
+                    <div class="form-row single">
+                        <div class="field">
+                            <label>Notes</label>
+                            <textarea id="log-notes" placeholder="What happened on this call? Key decisions, stakeholder signals, technical discoveries, blockers..."></textarea>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="log-btn">Add Log &amp; Update Plan</button>
+                </div>
+
+                <div class="loading-block" id="plan-loading">
+                    <div class="spinner"></div>
+                    <p>Generating 7 outputs from call logs...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8000';
+        let currentProjectId = null;
+
+        const STAGES = ["Prospect","Discovery","Technical","Pilot","Legal & Procurement","Deployment","Live"];
+        const STAGE_COLORS = {
+            "Prospect": "#6b6b80",
+            "Discovery": "#60a5fa",
+            "Technical": "#facc15",
+            "Pilot": "#f97316",
+            "Legal & Procurement": "#ef4444",
+            "Deployment": "#a78bfa",
+            "Live": "#22c55e"
+        };
+
+        // Populate stage selects
+        function populateStageSelect(el, selected) {
+            el.innerHTML = STAGES.map(s =>
+                `<option value="${s}" ${s === selected ? 'selected' : ''}>${s}</option>`
+            ).join('');
+        }
+        populateStageSelect(document.getElementById('proj-stage'), 'Prospect');
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+                if (tab.dataset.tab === 'projects') loadProjects();
+            });
+        });
+
+        // Markdown renderer
+        function renderMarkdown(md) {
+            if (!md) return '<span style="color:#444458">No data yet</span>';
+            md = md.replace(/^(\|.+\|)\n(\|[-| :]+\|)\n((?:\|.+\|\n?)*)/gm, (_, header, sep, body) => {
+                const th = header.split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
+                const rows = body.trim().split('\n').map(row => {
+                    const cells = row.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
+                    return `<tr>${cells}</tr>`;
+                }).join('');
+                return `<table><thead><tr>${th}</tr></thead><tbody>${rows}</tbody></table>`;
+            });
+            md = md.replace(/```(\w*)\n([\s\S]*?)```/g, (_, l, code) => `<pre><code>${esc(code.trim())}</code></pre>`);
+            md = md.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+            md = md.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+            md = md.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+            md = md.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+            md = md.replace(/^---$/gm, '<hr>');
+            md = md.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            md = md.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
+            md = md.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+            md = md.replace(/^(?:- (.+)\n?)+/gm, m => {
+                const items = m.trim().split('\n').map(l => `<li>${l.replace(/^- /, '')}</li>`).join('');
+                return `<ul>${items}</ul>`;
+            });
+            md = md.replace(/^(?:\d+\. (.+)\n?)+/gm, m => {
+                const items = m.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
+                return `<ol>${items}</ol>`;
+            });
+            md = md.replace(/^(?!<[a-z])((?!<\/)[^\n]+)$/gm, '<p>$1</p>');
+            md = md.replace(/<p>\s*<\/p>/g, '');
+            return md;
+        }
+        function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        function stageDot(stage) {
+            return `<span class="stage-dot" style="background:${STAGE_COLORS[stage] || '#6b6b80'}"></span>`;
+        }
+
+        // Copy email to clipboard
+        function copyEmail(id) {
+            const el = document.getElementById(id);
+            const text = el.innerText || el.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = el.parentElement.querySelector('.btn-copy') ||
+                            el.closest('.email-section').querySelector('.btn-copy');
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = orig, 1500);
+            });
+        }
+
+        // ── Research Panel ──
+        let lastBrief = { company: '', role: '', text: '' };
+        const researchForm = document.getElementById('research-form');
+        const researchBtn = document.getElementById('research-btn');
+        const researchLoading = document.getElementById('research-loading');
+        const researchError = document.getElementById('research-error');
+        const briefResult = document.getElementById('brief-result');
+
+        researchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const company = document.getElementById('company').value.trim();
+            const role = document.getElementById('role').value;
+            if (!company || !role) return;
+
+            researchLoading.classList.add('active');
+            researchError.classList.remove('active');
+            briefResult.classList.remove('active');
+            researchBtn.disabled = true;
+            researchBtn.textContent = 'Generating...';
+            const t0 = Date.now();
+
+            try {
+                const res = await fetch(`${API}/brief`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({company_name: company, role}),
+                });
+                if (!res.ok) throw new Error(`Server error ${res.status}: ${await res.text()}`);
+                const data = await res.json();
+                const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+                lastBrief = { company, role, text: data.brief };
+                document.getElementById('brief-body').innerHTML = renderMarkdown(data.brief);
+                document.getElementById('brief-meta').textContent = `${company} \u00b7 ${role} \u00b7 ${elapsed}s`;
+                document.getElementById('save-project-btn').disabled = false;
+                document.getElementById('save-project-msg').style.display = 'none';
+                briefResult.classList.add('active');
+            } catch (err) {
+                researchError.textContent = err.message;
+                researchError.classList.add('active');
+            } finally {
+                researchLoading.classList.remove('active');
+                researchBtn.disabled = false;
+                researchBtn.textContent = 'Generate Brief';
+            }
+        });
+
+        // Save brief as active project
+        document.getElementById('save-project-btn').addEventListener('click', async () => {
+            if (!lastBrief.text) return;
+            const btn = document.getElementById('save-project-btn');
+            const msg = document.getElementById('save-project-msg');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const res = await fetch(`${API}/projects/from-brief`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({
+                        company_name: lastBrief.company,
+                        role: lastBrief.role,
+                        brief: lastBrief.text,
+                    }),
+                });
+                if (!res.ok) throw new Error(`Server error ${res.status}: ${await res.text()}`);
+                const project = await res.json();
+
+                msg.textContent = `Project created \u2014 ${lastBrief.company} added to Active Projects`;
+                msg.style.display = 'block';
+                btn.textContent = '\u2713 Saved';
+
+                // Switch to projects tab and open the new project
+                setTimeout(async () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                    document.querySelector('[data-tab="projects"]').classList.add('active');
+                    document.getElementById('tab-projects').classList.add('active');
+                    await loadProjects();
+                    await openProject(project.id);
+                }, 800);
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = '\ud83d\udcc2 Save to Active Projects';
+                alert('Failed to save project: ' + err.message);
+            }
+        });
+
+        // ── Projects Panel ──
+        const projectsList = document.getElementById('projects-list');
+        const projectsView = document.getElementById('projects-view');
+        const projectDetail = document.getElementById('project-detail');
+
+        async function loadProjects() {
+            try {
+                const res = await fetch(`${API}/projects`);
+                if (!res.ok) throw new Error(`Server error ${res.status}`);
+                const projects = await res.json();
+                if (projects.length === 0) {
+                    projectsList.innerHTML = '<div class="empty-state">No projects yet. Create one above.</div>';
+                    return;
+                }
+                // Group by stage
+                const grouped = {};
+                STAGES.forEach(s => grouped[s] = []);
+                projects.forEach(p => {
+                    if (!grouped[p.stage]) grouped[p.stage] = [];
+                    grouped[p.stage].push(p);
+                });
+
+                let html = '';
+                STAGES.forEach(stage => {
+                    const items = grouped[stage];
+                    if (items.length === 0) return;
+                    html += `<div class="stage-group">
+                        <div class="stage-group-header">${stageDot(stage)} ${esc(stage)} (${items.length})</div>`;
+                    items.forEach(p => {
+                        html += `<div class="project-item" onclick="openProject(${p.id})">
+                            <div>
+                                <div class="name">${stageDot(p.stage)}${esc(p.client_name)}</div>
+                                <div class="meta">${esc(p.industry)} &middot; ${p.created_at.split(/[T ]/)[0]}</div>
+                            </div>
+                            <div class="right">
+                                <button class="delete-btn" onclick="event.stopPropagation();deleteProject(${p.id},'${esc(p.client_name)}')" title="Delete project">&#128465;</button>
+                            </div>
+                        </div>`;
+                    });
+                    html += '</div>';
+                });
+                projectsList.innerHTML = html;
+            } catch (err) {
+                projectsList.innerHTML = '<div class="empty-state">Could not load projects</div>';
+            }
+        }
+
+        async function deleteProject(id, name) {
+            if (!confirm(`Delete "${name}" and all its call logs and plans?`)) return;
+            try {
+                await fetch(`${API}/projects/${id}`, { method: 'DELETE' });
+                await loadProjects();
+            } catch (err) {
+                alert('Failed to delete: ' + err.message);
+            }
+        }
+
+        document.getElementById('new-project-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const client = document.getElementById('proj-client').value.trim();
+            const industry = document.getElementById('proj-industry').value.trim();
+            const stage = document.getElementById('proj-stage').value;
+            if (!client || !industry) return;
+            try {
+                const res = await fetch(`${API}/projects`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({client_name: client, industry, stage}),
+                });
+                if (!res.ok) throw new Error(`Server error ${res.status}: ${await res.text()}`);
+                document.getElementById('proj-client').value = '';
+                document.getElementById('proj-industry').value = '';
+                await loadProjects();
+            } catch (err) {
+                alert('Failed to create project: ' + err.message);
+            }
+        });
+
+        async function openProject(id) {
+            currentProjectId = id;
+            projectsView.style.display = 'none';
+            projectDetail.classList.add('active');
+            document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
+
+            const [projRes, planRes, logsRes] = await Promise.all([
+                fetch(`${API}/projects/${id}`),
+                fetch(`${API}/projects/${id}/plan`),
+                fetch(`${API}/projects/${id}/logs`),
+            ]);
+            const project = await projRes.json();
+            const plan = await planRes.json();
+            const logs = await logsRes.json();
+
+            document.getElementById('detail-name').textContent = project.client_name;
+            document.getElementById('detail-meta').textContent = `${project.industry} \u00b7 Created ${project.created_at.split(/[T ]/)[0]}`;
+            populateStageSelect(document.getElementById('detail-stage-select'), project.stage);
+
+            // Plan sections
+            document.getElementById('plan-integration').innerHTML = renderMarkdown(plan.integration_map);
+            document.getElementById('plan-stakeholders').innerHTML = renderMarkdown(plan.stakeholder_tracker);
+            document.getElementById('plan-questions').innerHTML = renderMarkdown(plan.open_questions);
+            document.getElementById('plan-risks').innerHTML = renderMarkdown(plan.risk_flags);
+            document.getElementById('plan-agenda').innerHTML = renderMarkdown(plan.next_meeting_agenda);
+
+            // Emails - render as plain text (preserving formatting)
+            const techEmail = plan.technical_email || '';
+            const execEmail = plan.executive_email || '';
+            document.getElementById('plan-email-tech').textContent = techEmail || 'No email generated yet';
+            document.getElementById('plan-email-exec').textContent = execEmail || 'No email generated yet';
+            if (!techEmail) document.getElementById('plan-email-tech').style.color = '#444458';
+            else document.getElementById('plan-email-tech').style.color = '#b8b8c8';
+            if (!execEmail) document.getElementById('plan-email-exec').style.color = '#444458';
+            else document.getElementById('plan-email-exec').style.color = '#b8b8c8';
+
+            // Call logs
+            if (logs.length === 0) {
+                document.getElementById('call-logs').innerHTML = '<div class="empty-state">No call logs yet</div>';
+            } else {
+                document.getElementById('call-logs').innerHTML = logs.map(l => `
+                    <div class="log-entry">
+                        <div class="log-date">${l.date}</div>
+                        <div class="log-notes">${esc(l.notes)}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Stage change via dropdown
+        document.getElementById('detail-stage-select').addEventListener('change', async (e) => {
+            if (!currentProjectId) return;
+            await fetch(`${API}/projects/${currentProjectId}/stage`, {
+                method: 'PATCH',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({stage: e.target.value}),
+            });
+        });
+
+        // Next stage button
+        document.getElementById('next-stage-btn').addEventListener('click', async () => {
+            if (!currentProjectId) return;
+            const sel = document.getElementById('detail-stage-select');
+            const idx = STAGES.indexOf(sel.value);
+            if (idx < STAGES.length - 1) {
+                const next = STAGES[idx + 1];
+                sel.value = next;
+                await fetch(`${API}/projects/${currentProjectId}/stage`, {
+                    method: 'PATCH',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({stage: next}),
+                });
+            }
+        });
+
+        document.getElementById('back-btn').addEventListener('click', () => {
+            projectDetail.classList.remove('active');
+            projectsView.style.display = 'block';
+            currentProjectId = null;
+            loadProjects();
+        });
+
+        // Add call log
+        document.getElementById('log-btn').addEventListener('click', async () => {
+            const date = document.getElementById('log-date').value;
+            const notes = document.getElementById('log-notes').value.trim();
+            if (!date || !notes || !currentProjectId) return;
+
+            const btn = document.getElementById('log-btn');
+            const planLoading = document.getElementById('plan-loading');
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+            planLoading.classList.add('active');
+
+            try {
+                await fetch(`${API}/projects/${currentProjectId}/log`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({date, notes}),
+                });
+                document.getElementById('log-notes').value = '';
+                await openProject(currentProjectId);
+            } catch (err) {
+                alert('Error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Add Log & Update Plan';
+                planLoading.classList.remove('active');
+            }
+        });
+
+        // Initial load
+        loadProjects();
+    </script>
+</body>
+</html>
