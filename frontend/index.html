@@ -76,7 +76,26 @@
             padding-right: 36px; cursor: pointer;
         }
         .field select option { background: #111119; color: #e0e0e8; }
-        .field textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+        .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+        /* Company input - prominent */
+        .company-input-wrap {
+            margin-bottom: 18px;
+        }
+        .company-input-wrap label {
+            display: block; font-size: 13px; font-weight: 700; color: #a78bfa;
+            letter-spacing: 0.3px; margin-bottom: 8px;
+        }
+        .company-input-wrap input {
+            width: 100%; padding: 14px 18px; background: #08080d;
+            border: 2px solid #2a2a3a; border-radius: 10px; color: #e0e0e8;
+            font-size: 16px; font-family: inherit; transition: border-color 0.2s;
+        }
+        .company-input-wrap input:focus {
+            outline: none; border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+        .company-input-wrap input::placeholder { color: #333348; }
 
         /* Buttons */
         .btn {
@@ -97,14 +116,7 @@
             width: auto; padding: 6px 14px; font-size: 12px;
         }
         .btn-outline:hover { border-color: #7c3aed; color: #a78bfa; }
-        .btn-copy {
-            background: #1a1a28; border: 1px solid #2a2a3a; color: #8888a0;
-            width: auto; padding: 5px 12px; font-size: 11px; border-radius: 6px;
-            cursor: pointer; transition: all 0.15s;
-        }
-        .btn-copy:hover { border-color: #7c3aed; color: #a78bfa; }
-
-        /* Loading */
+        /* Loading steps */
         .loading-block { display: none; text-align: center; padding: 36px 20px; }
         .loading-block.active { display: block; }
         .spinner {
@@ -114,16 +126,95 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-block p { font-size: 13px; color: #6b6b80; }
-        .agents-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
-        .agent-tag {
-            font-size: 11px; padding: 3px 10px; background: #1a1a28; border: 1px solid #2a2a3a;
-            border-radius: 16px; color: #6b6b80; animation: pulse 1.5s ease-in-out infinite;
+
+        .loading-steps { margin-top: 16px; text-align: left; max-width: 320px; margin-left: auto; margin-right: auto; }
+        .loading-step {
+            display: flex; align-items: center; gap: 10px; padding: 6px 0;
+            font-size: 12px; color: #444458; transition: color 0.3s;
         }
-        .agent-tag:nth-child(2) { animation-delay: 0.12s; }
-        .agent-tag:nth-child(3) { animation-delay: 0.24s; }
-        .agent-tag:nth-child(4) { animation-delay: 0.36s; }
-        .agent-tag:nth-child(5) { animation-delay: 0.48s; }
-        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        .loading-step.active { color: #a78bfa; }
+        .loading-step.done { color: #22c55e; }
+        .loading-step-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #2a2a3a;
+            flex-shrink: 0; transition: background 0.3s;
+        }
+        .loading-step.active .loading-step-dot {
+            background: #a78bfa; animation: pulse-dot 1.2s ease-in-out infinite;
+        }
+        .loading-step.done .loading-step-dot { background: #22c55e; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        /* Signal chips */
+        .signal-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .signal-chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+            background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.25);
+            color: #22c55e;
+        }
+        .signal-chip.warm {
+            background: rgba(250, 204, 21, 0.1); border-color: rgba(250, 204, 21, 0.25);
+            color: #facc15;
+        }
+        .signal-chip.orange {
+            background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.25);
+            color: #f97316;
+        }
+        .signal-chip.purple {
+            background: rgba(167, 139, 250, 0.1); border-color: rgba(167, 139, 250, 0.25);
+            color: #a78bfa;
+        }
+
+        /* Intent / Funding banners */
+        .signal-banner {
+            display: none; padding: 10px 16px; border-radius: 8px; margin-bottom: 12px;
+            font-size: 12px; font-weight: 600;
+        }
+        .signal-banner.active { display: flex; align-items: center; gap: 8px; }
+        .signal-banner.hiring {
+            background: rgba(249, 115, 22, 0.08); border: 1px solid rgba(249, 115, 22, 0.2);
+            color: #f97316;
+        }
+        .signal-banner.funding {
+            background: rgba(167, 139, 250, 0.08); border: 1px solid rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+        }
+        .signal-banner-icon { font-size: 16px; }
+
+        /* Product match banner */
+        .product-match-banner {
+            display: none; padding: 18px 22px; border-radius: 12px; margin-bottom: 20px;
+            border: 1px solid #1e1e2e; background: #111119;
+        }
+        .product-match-banner.active { display: block; }
+        .product-match-top {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .product-match-label { font-size: 11px; color: #6b6b80; text-transform: uppercase; letter-spacing: 0.5px; }
+        .product-match-name { font-size: 18px; font-weight: 700; color: #e0e0e8; margin-top: 2px; }
+        .product-match-score {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .score-badge {
+            padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 700;
+        }
+        .score-badge.hot { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        .score-badge.warm { background: rgba(250, 204, 21, 0.15); color: #facc15; }
+        .score-badge.cold { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .score-number { font-size: 24px; font-weight: 800; }
+        .score-number.hot { color: #f87171; }
+        .score-number.warm { color: #facc15; }
+        .score-number.cold { color: #60a5fa; }
+        .product-match-details { font-size: 13px; color: #8888a0; line-height: 1.5; }
+        .product-match-secondary { margin-top: 10px; padding-top: 10px; border-top: 1px solid #1e1e2e; font-size: 12px; color: #6b6b80; }
+        .product-match-secondary strong { color: #8888a0; }
+        .winning-angle {
+            margin-top: 10px; padding: 10px 14px; background: rgba(124, 58, 237, 0.08);
+            border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0;
+            font-size: 13px; color: #c0c0d0;
+        }
+        .winning-angle-label { font-size: 10px; color: #7c3aed; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 3px; }
 
         /* Error */
         .error-msg {
@@ -180,14 +271,40 @@
 
         /* Project list */
         .project-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 18px; background: #111119; border: 1px solid #1e1e2e;
+            padding: 16px 18px; background: #111119; border: 1px solid #1e1e2e;
             border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s;
         }
         .project-item:hover { border-color: #7c3aed; }
+        .project-item-top {
+            display: flex; align-items: center; justify-content: space-between;
+        }
         .project-item .name { font-size: 14px; font-weight: 600; }
-        .project-item .meta { font-size: 11px; color: #555568; }
+        .project-item .meta { font-size: 11px; color: #555568; margin-top: 2px; }
         .project-item .right { display: flex; align-items: center; gap: 10px; }
+        .project-item-badges {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+        }
+        .badge-sm {
+            display: inline-flex; align-items: center; padding: 3px 10px;
+            border-radius: 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+        }
+        .badge-product { background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.25); }
+        .badge-hot { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+        .badge-warm { background: rgba(250,204,21,0.12); color: #facc15; border: 1px solid rgba(250,204,21,0.25); }
+        .badge-cold { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+        .badge-migr-low { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
+        .badge-migr-medium { background: rgba(250,204,21,0.12); color: #facc15; border: 1px solid rgba(250,204,21,0.25); }
+        .badge-migr-high { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+        .next-action-row {
+            margin-top: 8px; display: flex; align-items: center; gap: 8px;
+        }
+        .next-action-input {
+            flex: 1; padding: 5px 10px; background: #08080d; border: 1px solid #2a2a3a;
+            border-radius: 6px; color: #e0e0e8; font-size: 11px; font-family: inherit;
+        }
+        .next-action-input::placeholder { color: #333348; }
+        .next-action-input:focus { outline: none; border-color: #7c3aed; }
+        .next-action-label { font-size: 10px; color: #6b6b80; font-weight: 600; white-space: nowrap; }
         .delete-btn {
             background: none; border: none; color: #444458; cursor: pointer;
             font-size: 14px; padding: 4px 6px; border-radius: 4px; transition: all 0.15s;
@@ -207,11 +324,60 @@
 
         .detail-header {
             display: flex; align-items: flex-start; justify-content: space-between;
-            margin-bottom: 24px; gap: 16px;
+            margin-bottom: 16px; gap: 16px;
         }
         .detail-header-left h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
         .detail-header-left .meta { font-size: 12px; color: #555568; }
+        .detail-header-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
         .detail-header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+        /* Project inner tabs */
+        .detail-tabs {
+            display: flex; gap: 0; border-bottom: 1px solid #1e1e2e; margin-bottom: 20px;
+        }
+        .detail-tab {
+            padding: 10px 20px; font-size: 12px; font-weight: 600; color: #555568;
+            cursor: pointer; border-bottom: 2px solid transparent;
+            transition: color 0.15s, border-color 0.15s; user-select: none;
+        }
+        .detail-tab:hover { color: #8888a0; }
+        .detail-tab.active { color: #a78bfa; border-bottom-color: #7c3aed; }
+        .detail-tab-panel { display: none; }
+        .detail-tab-panel.active { display: block; }
+
+        /* Implementation phases */
+        .impl-phase {
+            margin-bottom: 20px; background: #0c0c14; border: 1px solid #1a1a28;
+            border-radius: 10px; padding: 18px;
+        }
+        .impl-phase-header {
+            font-size: 13px; font-weight: 700; margin-bottom: 10px; display: flex;
+            align-items: center; gap: 8px;
+        }
+        .impl-phase-header .phase-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 800;
+        }
+        .phase-1 .phase-num { background: rgba(96,165,250,0.2); color: #60a5fa; }
+        .phase-2 .phase-num { background: rgba(167,139,250,0.2); color: #a78bfa; }
+        .phase-3 .phase-num { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .impl-phase-body { font-size: 13px; color: #b8b8c8; line-height: 1.7; white-space: pre-wrap; }
+
+        /* Call prep cards */
+        .prep-card {
+            margin-bottom: 14px; background: #0c0c14; border: 1px solid #1a1a28;
+            border-radius: 8px; padding: 14px 16px;
+        }
+        .prep-card-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .prep-card-label.arch { color: #a78bfa; }
+        .prep-card-label.risk { color: #f97316; }
+        .prep-card-label.talk { color: #60a5fa; }
+        .prep-card-label.avoid { color: #f87171; }
+        .prep-card-label.signals { color: #22c55e; }
+        .prep-card-body { font-size: 13px; color: #b8b8c8; line-height: 1.6; }
 
         .plan-section { margin-bottom: 20px; }
         .plan-section-header {
@@ -227,22 +393,6 @@
             padding: 16px; font-size: 13px; color: #b8b8c8; min-height: 50px;
         }
 
-        .email-section { margin-bottom: 20px; }
-        .email-header {
-            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
-        }
-        .email-title {
-            font-size: 12px; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
-        }
-        .email-title.tech { color: #60a5fa; }
-        .email-title.exec { color: #f59e0b; }
-        .email-body {
-            background: #0c0c14; border: 1px solid #1a1a28; border-radius: 8px;
-            padding: 16px; font-size: 13px; color: #b8b8c8; white-space: pre-wrap;
-            line-height: 1.6;
-        }
-
         .log-entry {
             padding: 10px 14px; background: #0c0c14; border: 1px solid #1a1a28;
             border-radius: 8px; margin-bottom: 8px; font-size: 12px;
@@ -256,6 +406,15 @@
         }
 
         .divider { border: none; border-top: 1px solid #1a1a28; margin: 28px 0; }
+
+        /* Notes toggle */
+        .notes-toggle {
+            font-size: 12px; color: #6b6b80; cursor: pointer; margin-bottom: 14px;
+            display: inline-flex; align-items: center; gap: 6px; transition: color 0.15s;
+        }
+        .notes-toggle:hover { color: #a78bfa; }
+        .notes-collapse { display: none; }
+        .notes-collapse.open { display: block; }
 
         @media (max-width: 600px) {
             .workspace { padding: 0; }
@@ -283,39 +442,84 @@
         <div class="panel active" id="tab-research">
             <div class="card">
                 <form id="research-form">
-                    <div class="form-row">
-                        <div class="field">
-                            <label>Company Name</label>
-                            <input type="text" id="company" placeholder="e.g. Duolingo" required>
-                        </div>
-                        <div class="field">
-                            <label>Target Role</label>
-                            <select id="role" required>
-                                <option value="" disabled selected>Select role</option>
-                                <option value="Deployment Strategist">Deployment Strategist</option>
-                                <option value="Solutions Engineer">Solutions Engineer</option>
-                                <option value="Customer Success">Customer Success</option>
-                                <option value="Head of Partnerships">Head of Partnerships</option>
-                            </select>
+                    <div class="company-input-wrap">
+                        <label>Company Name or URL</label>
+                        <input type="text" id="company" placeholder="e.g. Duolingo, spotify.com, Deutsche Telekom" required>
+                    </div>
+                    <div class="notes-toggle" id="notes-toggle">
+                        <span>&#9660;</span> Add your own context (optional)
+                    </div>
+                    <div class="notes-collapse" id="notes-section">
+                        <div class="form-row single" style="margin-bottom:16px">
+                            <div class="field">
+                                <textarea id="user-notes" placeholder="Any extra context: what you already know, who you're meeting, specific angles to explore..."></textarea>
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="research-btn">Generate Brief</button>
+                    <button type="submit" class="btn btn-primary" id="research-btn">Research &amp; Generate Brief</button>
                 </form>
             </div>
 
             <div class="loading-block" id="research-loading">
                 <div class="spinner"></div>
-                <p>Running 5 agents in parallel...</p>
-                <div class="agents-list">
-                    <span class="agent-tag">Company Intel</span>
-                    <span class="agent-tag">Use Cases</span>
-                    <span class="agent-tag">Stakeholders</span>
-                    <span class="agent-tag">Objections</span>
-                    <span class="agent-tag">Playbook</span>
+                <p id="loading-status">Starting research...</p>
+                <div class="loading-steps">
+                    <div class="loading-step" id="step-scan"><div class="loading-step-dot"></div> Scanning website...</div>
+                    <div class="loading-step" id="step-jobs"><div class="loading-step-dot"></div> Detecting hiring signals...</div>
+                    <div class="loading-step" id="step-funding"><div class="loading-step-dot"></div> Checking funding &amp; growth...</div>
+                    <div class="loading-step" id="step-match"><div class="loading-step-dot"></div> Matching ElevenLabs products...</div>
+                    <div class="loading-step" id="step-synth"><div class="loading-step-dot"></div> Generating brief...</div>
                 </div>
             </div>
 
             <div class="error-msg" id="research-error"></div>
+
+            <!-- Signals + Product Match (shown before brief) -->
+            <div id="signals-display" style="display:none">
+                <div class="signal-chips" id="signal-chips"></div>
+            </div>
+
+            <!-- Job signals -->
+            <div id="job-signals-display" style="display:none">
+                <div class="signal-banner hiring" id="job-signal-banner">
+                    <span class="signal-banner-icon">&#128270;</span>
+                    <span id="job-banner-text"></span>
+                </div>
+                <div class="signal-chips" id="job-chips"></div>
+            </div>
+
+            <!-- Funding signals -->
+            <div id="funding-signals-display" style="display:none">
+                <div class="signal-banner funding" id="funding-signal-banner">
+                    <span class="signal-banner-icon">&#128176;</span>
+                    <span id="funding-banner-text"></span>
+                </div>
+                <div class="signal-chips" id="funding-chips"></div>
+            </div>
+
+            <div class="product-match-banner" id="product-match-banner">
+                <div class="product-match-top">
+                    <div>
+                        <div class="product-match-label">Primary Product Fit</div>
+                        <div class="product-match-name" id="pm-name"></div>
+                    </div>
+                    <div class="product-match-score">
+                        <div class="score-number" id="pm-score"></div>
+                        <div>
+                            <div class="score-badge" id="pm-tier"></div>
+                            <div style="font-size:10px;color:#555568;text-align:center;margin-top:2px">/100</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-match-details" id="pm-reason"></div>
+                <div class="product-match-secondary">
+                    <strong>Secondary:</strong> <span id="pm-secondary"></span> &mdash; <span id="pm-secondary-reason"></span>
+                </div>
+                <div class="winning-angle" id="pm-angle-wrap">
+                    <div class="winning-angle-label">Winning Angle</div>
+                    <div id="pm-angle"></div>
+                </div>
+            </div>
 
             <div class="card brief-result" id="brief-result">
                 <div class="brief-header">
@@ -324,7 +528,7 @@
                 </div>
                 <div class="md" id="brief-body"></div>
                 <div style="margin-top:20px;padding-top:16px;border-top:1px solid #1e1e2e">
-                    <button class="btn btn-primary" id="save-project-btn" style="max-width:320px">&#128194; Save to Active Projects</button>
+                    <button class="btn btn-primary" id="save-project-btn" style="max-width:320px">Save to Active Projects</button>
                     <div id="save-project-msg" style="display:none;margin-top:10px;font-size:13px;color:#22c55e"></div>
                 </div>
             </div>
@@ -371,54 +575,30 @@
                     </div>
                 </div>
 
-                <!-- 5 Plan sections -->
-                <div class="plan-section">
-                    <div class="plan-section-header">
-                        <div class="plan-section-title"><span class="plan-section-icon">&#9881;</span> Integration Map</div>
-                    </div>
-                    <div class="plan-section-body md" id="plan-integration"></div>
-                </div>
-                <div class="plan-section">
-                    <div class="plan-section-header">
-                        <div class="plan-section-title"><span class="plan-section-icon">&#128101;</span> Stakeholder Tracker</div>
-                    </div>
-                    <div class="plan-section-body md" id="plan-stakeholders"></div>
-                </div>
-                <div class="plan-section">
-                    <div class="plan-section-header">
-                        <div class="plan-section-title"><span class="plan-section-icon">&#10067;</span> Open Questions</div>
-                    </div>
-                    <div class="plan-section-body md" id="plan-questions"></div>
-                </div>
-                <div class="plan-section">
-                    <div class="plan-section-header">
-                        <div class="plan-section-title"><span class="plan-section-icon">&#9888;</span> Risk Flags</div>
-                    </div>
-                    <div class="plan-section-body md" id="plan-risks"></div>
-                </div>
-                <div class="plan-section">
-                    <div class="plan-section-header">
-                        <div class="plan-section-title"><span class="plan-section-icon">&#128197;</span> Next Meeting Agenda</div>
-                    </div>
-                    <div class="plan-section-body md" id="plan-agenda"></div>
+                <div class="detail-header-badges" id="detail-badges"></div>
+
+                <!-- Inner tabs -->
+                <div class="detail-tabs" id="detail-tabs">
+                    <div class="detail-tab active" data-dtab="brief">Brief</div>
+                    <div class="detail-tab" data-dtab="techplan">Technical Plan</div>
+                    <div class="detail-tab" data-dtab="callprep">Call Prep</div>
                 </div>
 
-                <hr class="divider">
-
-                <!-- Draft emails -->
-                <div class="email-section">
-                    <div class="email-header">
-                        <div class="email-title tech"><span class="plan-section-icon">&#9993;</span> Technical Follow-Up Email</div>
-                        <button class="btn-copy" onclick="copyEmail('plan-email-tech')">Copy</button>
-                    </div>
-                    <div class="email-body" id="plan-email-tech"></div>
+                <!-- Tab 1: Brief -->
+                <div class="detail-tab-panel active" id="dtab-brief">
+                    <div class="md" id="detail-brief-body"></div>
                 </div>
-                <div class="email-section">
-                    <div class="email-header">
-                        <div class="email-title exec"><span class="plan-section-icon">&#9993;</span> Executive Follow-Up Email</div>
-                        <button class="btn-copy" onclick="copyEmail('plan-email-exec')">Copy</button>
-                    </div>
-                    <div class="email-body" id="plan-email-exec"></div>
+
+                <!-- Tab 2: Technical Plan -->
+                <div class="detail-tab-panel" id="dtab-techplan">
+                    <div id="impl-phases"></div>
+                    <div class="empty-state" id="techplan-empty" style="display:none">No implementation plan available. Save a research brief to generate one.</div>
+                </div>
+
+                <!-- Tab 3: Call Prep -->
+                <div class="detail-tab-panel" id="dtab-callprep">
+                    <div id="callprep-content"></div>
+                    <div class="empty-state" id="callprep-empty" style="display:none">No call prep data. Save a research brief to generate call prep.</div>
                 </div>
 
                 <hr class="divider">
@@ -448,7 +628,7 @@
 
                 <div class="loading-block" id="plan-loading">
                     <div class="spinner"></div>
-                    <p>Generating 7 outputs from call logs...</p>
+                    <p>Updating plan from call logs...</p>
                 </div>
             </div>
         </div>
@@ -458,15 +638,23 @@
         const API = window.location.hostname === 'localhost' ? 'http://localhost:8000' : window.location.origin;
         let currentProjectId = null;
 
-        const STAGES = ["Prospect","Discovery","Technical","Pilot","Legal & Procurement","Deployment","Live"];
+        const STAGES = ["Prospect","Qualified","POC Active","POC Complete","Negotiation","Closed Won"];
         const STAGE_COLORS = {
             "Prospect": "#6b6b80",
-            "Discovery": "#60a5fa",
-            "Technical": "#facc15",
-            "Pilot": "#f97316",
-            "Legal & Procurement": "#ef4444",
-            "Deployment": "#a78bfa",
-            "Live": "#22c55e"
+            "Qualified": "#60a5fa",
+            "POC Active": "#f97316",
+            "POC Complete": "#facc15",
+            "Negotiation": "#a78bfa",
+            "Closed Won": "#22c55e"
+        };
+
+        const SIGNAL_LABELS = {
+            "has_audio_video": "Video/Audio Content",
+            "multilingual": "Multilingual",
+            "high_content_volume": "High Content Volume",
+            "customer_facing_comms": "Customer Comms",
+            "developer_api": "Developer API",
+            "media_entertainment": "Media/Entertainment"
         };
 
         // Populate stage selects
@@ -486,6 +674,14 @@
                 document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
                 if (tab.dataset.tab === 'projects') loadProjects();
             });
+        });
+
+        // Notes toggle
+        document.getElementById('notes-toggle').addEventListener('click', () => {
+            const sec = document.getElementById('notes-section');
+            const tog = document.getElementById('notes-toggle');
+            sec.classList.toggle('open');
+            tog.querySelector('span').textContent = sec.classList.contains('open') ? '\u25B2' : '\u25BC';
         });
 
         // Markdown renderer
@@ -527,21 +723,166 @@
             return `<span class="stage-dot" style="background:${STAGE_COLORS[stage] || '#6b6b80'}"></span>`;
         }
 
-        // Copy email to clipboard
-        function copyEmail(id) {
-            const el = document.getElementById(id);
-            const text = el.innerText || el.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = el.parentElement.querySelector('.btn-copy') ||
-                            el.closest('.email-section').querySelector('.btn-copy');
-                const orig = btn.textContent;
-                btn.textContent = 'Copied!';
-                setTimeout(() => btn.textContent = orig, 1500);
+        // Loading step animation
+        function setLoadingStep(stepNum) {
+            const steps = ['step-scan', 'step-jobs', 'step-funding', 'step-match', 'step-synth'];
+            steps.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.classList.remove('active', 'done');
+                if (i < stepNum) el.classList.add('done');
+                else if (i === stepNum) el.classList.add('active');
             });
         }
 
+        // Display signals as chips
+        function renderSignals(signals) {
+            const container = document.getElementById('signal-chips');
+            const detected = signals.signals_detected || [];
+            if (detected.length === 0) {
+                document.getElementById('signals-display').style.display = 'none';
+                return;
+            }
+            container.innerHTML = detected.map(s => {
+                const label = SIGNAL_LABELS[s] || s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                return `<div class="signal-chip">${label}</div>`;
+            }).join('');
+
+            // Show industry and employee count if available
+            const extras = [];
+            if (signals.industry && signals.industry !== 'Unknown') {
+                extras.push(`<div class="signal-chip warm">${esc(signals.industry)}</div>`);
+            }
+            if (signals.employee_count_estimate && signals.employee_count_estimate !== 'Unknown') {
+                extras.push(`<div class="signal-chip warm">${esc(signals.employee_count_estimate)} employees</div>`);
+            }
+            container.innerHTML += extras.join('');
+            document.getElementById('signals-display').style.display = 'block';
+        }
+
+        // Display product match banner
+        function renderProductMatch(pm) {
+            const banner = document.getElementById('product-match-banner');
+            const tier = (pm.fit_tier || 'Cold').toLowerCase();
+
+            document.getElementById('pm-name').textContent = pm.primary_product || 'Unknown';
+            document.getElementById('pm-score').textContent = pm.fit_score || 0;
+            document.getElementById('pm-score').className = 'score-number ' + tier;
+
+            const tierBadge = document.getElementById('pm-tier');
+            tierBadge.textContent = pm.fit_tier || 'Cold';
+            tierBadge.className = 'score-badge ' + tier;
+
+            document.getElementById('pm-reason').textContent = pm.primary_reason || '';
+            document.getElementById('pm-secondary').textContent = pm.secondary_product || '';
+            document.getElementById('pm-secondary-reason').textContent = pm.secondary_reason || '';
+
+            if (pm.winning_angle && pm.winning_angle !== 'Unknown') {
+                document.getElementById('pm-angle').textContent = pm.winning_angle;
+                document.getElementById('pm-angle-wrap').style.display = 'block';
+            } else {
+                document.getElementById('pm-angle-wrap').style.display = 'none';
+            }
+
+            banner.classList.add('active');
+        }
+
+        // Display job signal chips and banner
+        function renderJobSignals(jobSignals) {
+            const container = document.getElementById('job-chips');
+            const banner = document.getElementById('job-signal-banner');
+            const display = document.getElementById('job-signals-display');
+            const jobs = jobSignals.jobs_found || [];
+
+            if (jobs.length === 0 || jobSignals.intent_score === 0) {
+                display.style.display = 'none';
+                return;
+            }
+
+            // Show banner
+            document.getElementById('job-banner-text').textContent =
+                `Active hiring signals detected (intent: ${jobSignals.intent_score}/100) \u2014 ${jobSignals.top_signal || 'strong buying intent'}`;
+            banner.classList.add('active');
+
+            // Show job chips (high and medium intent only)
+            const relevantJobs = jobs.filter(j => j.intent_level === 'high' || j.intent_level === 'medium');
+            container.innerHTML = relevantJobs.map(j =>
+                `<div class="signal-chip orange">Hiring: ${esc(j.title)}</div>`
+            ).join('');
+
+            display.style.display = 'block';
+        }
+
+        // Display funding signal chips and banner
+        function renderFundingSignals(fundingSignals) {
+            const container = document.getElementById('funding-chips');
+            const banner = document.getElementById('funding-signal-banner');
+            const display = document.getElementById('funding-signals-display');
+
+            const whyNowScore = fundingSignals.why_now_score || 0;
+            const growthSignals = fundingSignals.growth_signals || [];
+            const latestFunding = fundingSignals.latest_funding || {};
+            const hasFunding = latestFunding.amount && latestFunding.amount !== 'Unknown';
+
+            if (whyNowScore === 0 && !hasFunding && growthSignals.length === 0) {
+                display.style.display = 'none';
+                return;
+            }
+
+            // Show banner
+            let bannerText = '';
+            if (hasFunding) {
+                bannerText = `Recently funded \u2014 budget available (timing: ${whyNowScore}/100)`;
+            } else if (growthSignals.length > 0) {
+                bannerText = `Growth signals detected (timing: ${whyNowScore}/100)`;
+            } else {
+                bannerText = `Timing score: ${whyNowScore}/100`;
+            }
+            document.getElementById('funding-banner-text').textContent = bannerText;
+            banner.classList.add('active');
+
+            // Show chips
+            const chips = [];
+            if (hasFunding) {
+                let fundingLabel = latestFunding.series || '';
+                if (latestFunding.amount !== 'Unknown') fundingLabel += ` \u2014 ${latestFunding.amount}`;
+                if (latestFunding.date !== 'Unknown') fundingLabel += ` (${latestFunding.date})`;
+                chips.push(`<div class="signal-chip purple">${esc(fundingLabel.trim())}</div>`);
+            }
+            growthSignals.forEach(s => {
+                // Truncate long signals for chip display
+                const short = s.length > 60 ? s.substring(0, 57) + '...' : s;
+                chips.push(`<div class="signal-chip purple">${esc(short)}</div>`);
+            });
+
+            container.innerHTML = chips.join('');
+            display.style.display = 'block';
+        }
+
+        // In-memory next actions for project cards (with seed data support)
+        const nextActions = JSON.parse(localStorage.getItem('fde_next_actions') || '{}');
+        function saveNextAction(projectId, text) {
+            nextActions[projectId] = text;
+            localStorage.setItem('fde_next_actions', JSON.stringify(nextActions));
+        }
+        // Load seed next-actions if not already set
+        async function loadSeedNextActions() {
+            try {
+                const res = await fetch(`${API}/seed-next-actions`);
+                if (!res.ok) return;
+                const seed = await res.json();
+                let changed = false;
+                for (const [pid, text] of Object.entries(seed)) {
+                    if (!nextActions[pid]) {
+                        nextActions[pid] = text;
+                        changed = true;
+                    }
+                }
+                if (changed) localStorage.setItem('fde_next_actions', JSON.stringify(nextActions));
+            } catch {}
+        }
+
         // ── Research Panel ──
-        let lastBrief = { company: '', role: '', text: '' };
+        let lastBrief = { company: '', role: '', text: '', industry: '', product_match: null, signals: null, job_signals: null, funding_signals: null };
         const researchForm = document.getElementById('research-form');
         const researchBtn = document.getElementById('research-btn');
         const researchLoading = document.getElementById('research-loading');
@@ -551,38 +892,86 @@
         researchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const company = document.getElementById('company').value.trim();
-            const role = document.getElementById('role').value;
-            if (!company || !role) return;
+            const notes = document.getElementById('user-notes').value.trim();
+            if (!company) return;
 
+            // Reset UI
             researchLoading.classList.add('active');
             researchError.classList.remove('active');
             briefResult.classList.remove('active');
+            document.getElementById('signals-display').style.display = 'none';
+            document.getElementById('job-signals-display').style.display = 'none';
+            document.getElementById('funding-signals-display').style.display = 'none';
+            document.getElementById('job-signal-banner').classList.remove('active');
+            document.getElementById('funding-signal-banner').classList.remove('active');
+            document.getElementById('product-match-banner').classList.remove('active');
             researchBtn.disabled = true;
-            researchBtn.textContent = 'Generating...';
+            researchBtn.textContent = 'Researching...';
             const t0 = Date.now();
+
+            // Animate loading steps
+            setLoadingStep(0);
+            const stepTimers = [
+                setTimeout(() => setLoadingStep(1), 3000),
+                setTimeout(() => setLoadingStep(2), 6000),
+                setTimeout(() => setLoadingStep(3), 12000),
+                setTimeout(() => setLoadingStep(4), 20000),
+            ];
 
             try {
                 const res = await fetch(`${API}/brief`, {
                     method: 'POST',
                     headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({company_name: company, role}),
+                    body: JSON.stringify({company_name: company, notes: notes || ''}),
                 });
                 if (!res.ok) throw new Error(`Server error ${res.status}: ${await res.text()}`);
                 const data = await res.json();
                 const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-                lastBrief = { company, role, text: data.brief };
+
+                stepTimers.forEach(t => clearTimeout(t));
+
+                // Show signals immediately
+                if (data.signals) {
+                    renderSignals(data.signals);
+                }
+
+                // Show job signals
+                if (data.job_signals) {
+                    renderJobSignals(data.job_signals);
+                }
+
+                // Show funding signals
+                if (data.funding_signals) {
+                    renderFundingSignals(data.funding_signals);
+                }
+
+                // Show product match
+                if (data.product_match) {
+                    renderProductMatch(data.product_match);
+                }
+
+                // Show brief
+                const industry = (data.signals && data.signals.industry) || '';
+                lastBrief = {
+                    company, role: 'Deployment Strategist', text: data.brief, industry,
+                    product_match: data.product_match || null,
+                    signals: data.signals || null,
+                    job_signals: data.job_signals || null,
+                    funding_signals: data.funding_signals || null,
+                };
                 document.getElementById('brief-body').innerHTML = renderMarkdown(data.brief);
-                document.getElementById('brief-meta').textContent = `${company} \u00b7 ${role} \u00b7 ${elapsed}s`;
+                document.getElementById('brief-meta').textContent = `${company} \u00b7 ${elapsed}s`;
                 document.getElementById('save-project-btn').disabled = false;
                 document.getElementById('save-project-msg').style.display = 'none';
                 briefResult.classList.add('active');
             } catch (err) {
+                stepTimers.forEach(t => clearTimeout(t));
                 researchError.textContent = err.message;
                 researchError.classList.add('active');
             } finally {
                 researchLoading.classList.remove('active');
                 researchBtn.disabled = false;
-                researchBtn.textContent = 'Generate Brief';
+                researchBtn.textContent = 'Research & Generate Brief';
             }
         });
 
@@ -602,6 +991,11 @@
                         company_name: lastBrief.company,
                         role: lastBrief.role,
                         brief: lastBrief.text,
+                        industry: lastBrief.industry,
+                        product_match: lastBrief.product_match,
+                        signals: lastBrief.signals,
+                        job_signals: lastBrief.job_signals,
+                        funding_signals: lastBrief.funding_signals,
                     }),
                 });
                 if (!res.ok) throw new Error(`Server error ${res.status}: ${await res.text()}`);
@@ -609,7 +1003,7 @@
 
                 msg.textContent = `Project created \u2014 ${lastBrief.company} added to Active Projects`;
                 msg.style.display = 'block';
-                btn.textContent = '\u2713 Saved';
+                btn.textContent = 'Saved';
 
                 // Switch to projects tab and open the new project
                 setTimeout(async () => {
@@ -622,7 +1016,7 @@
                 }, 800);
             } catch (err) {
                 btn.disabled = false;
-                btn.textContent = '\ud83d\udcc2 Save to Active Projects';
+                btn.textContent = 'Save to Active Projects';
                 alert('Failed to save project: ' + err.message);
             }
         });
@@ -632,13 +1026,36 @@
         const projectsView = document.getElementById('projects-view');
         const projectDetail = document.getElementById('project-detail');
 
+        function parseBriefData(p) {
+            if (!p.brief_data) return null;
+            try { return JSON.parse(p.brief_data); } catch { return null; }
+        }
+
+        function renderProjectBadges(bd) {
+            if (!bd || !bd.product_match) return '';
+            const pm = bd.product_match;
+            let badges = '';
+            if (pm.primary_product) {
+                badges += `<span class="badge-sm badge-product">${esc(pm.primary_product)}</span>`;
+            }
+            const tier = (pm.fit_tier || '').toLowerCase();
+            if (tier) {
+                badges += `<span class="badge-sm badge-${tier}">${esc(pm.fit_tier)} (${pm.fit_score || 0})</span>`;
+            }
+            const migr = (pm.migration_complexity || '').toLowerCase();
+            if (migr) {
+                badges += `<span class="badge-sm badge-migr-${migr}">${migr.charAt(0).toUpperCase() + migr.slice(1)} complexity</span>`;
+            }
+            return badges;
+        }
+
         async function loadProjects() {
             try {
                 const res = await fetch(`${API}/projects`);
                 if (!res.ok) throw new Error(`Server error ${res.status}`);
                 const projects = await res.json();
                 if (projects.length === 0) {
-                    projectsList.innerHTML = '<div class="empty-state">No projects yet. Create one above.</div>';
+                    projectsList.innerHTML = '<div class="empty-state">No projects yet. Create one above or save a research brief.</div>';
                     return;
                 }
                 // Group by stage
@@ -656,13 +1073,25 @@
                     html += `<div class="stage-group">
                         <div class="stage-group-header">${stageDot(stage)} ${esc(stage)} (${items.length})</div>`;
                     items.forEach(p => {
+                        const bd = parseBriefData(p);
+                        const badges = renderProjectBadges(bd);
+                        const na = nextActions[p.id] || '';
                         html += `<div class="project-item" onclick="openProject(${p.id})">
-                            <div>
-                                <div class="name">${stageDot(p.stage)}${esc(p.client_name)}</div>
-                                <div class="meta">${esc(p.industry)} &middot; ${p.created_at.split(/[T ]/)[0]}</div>
+                            <div class="project-item-top">
+                                <div>
+                                    <div class="name">${stageDot(p.stage)}${esc(p.client_name)}</div>
+                                    <div class="meta">${esc(p.industry)} &middot; ${p.created_at.split(/[T ]/)[0]}</div>
+                                </div>
+                                <div class="right">
+                                    <button class="delete-btn" onclick="event.stopPropagation();deleteProject(${p.id},'${esc(p.client_name)}')" title="Delete project">&#128465;</button>
+                                </div>
                             </div>
-                            <div class="right">
-                                <button class="delete-btn" onclick="event.stopPropagation();deleteProject(${p.id},'${esc(p.client_name)}')" title="Delete project">&#128465;</button>
+                            ${badges ? `<div class="project-item-badges">${badges}</div>` : ''}
+                            <div class="next-action-row" onclick="event.stopPropagation()">
+                                <span class="next-action-label">Next:</span>
+                                <input class="next-action-input" type="text" placeholder="e.g. Follow up Thursday..."
+                                    value="${esc(na)}" onchange="saveNextAction(${p.id}, this.value)"
+                                    onclick="event.stopPropagation()">
                             </div>
                         </div>`;
                     });
@@ -705,41 +1134,174 @@
             }
         });
 
+        function renderImplPhases(plan) {
+            if (!plan || (!plan.phase_1 && !plan.phase_2 && !plan.phase_3)) return '';
+            const phases = [
+                { num: 1, title: 'Proof of Concept (Week 1-2)', body: plan.phase_1, cls: 'phase-1' },
+                { num: 2, title: 'Integration (Week 3-6)', body: plan.phase_2, cls: 'phase-2' },
+                { num: 3, title: 'Scale (Week 6+)', body: plan.phase_3, cls: 'phase-3' },
+            ];
+            return phases.map(p => `
+                <div class="impl-phase ${p.cls}">
+                    <div class="impl-phase-header">
+                        <span class="phase-num">${p.num}</span> Phase ${p.num}: ${p.title}
+                    </div>
+                    <div class="impl-phase-body">${esc(p.body || 'No data')}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderCallPrep(bd) {
+            if (!bd || !bd.product_match) return '';
+            const pm = bd.product_match;
+            const signals = bd.signals || {};
+            const jobSignals = bd.job_signals || {};
+            const fundingSignals = bd.funding_signals || {};
+            let html = '';
+
+            // Architecture
+            if (pm.recommended_architecture || pm.integration_pattern) {
+                html += `<div class="prep-card">
+                    <div class="prep-card-label arch">Recommended Architecture</div>
+                    <div class="prep-card-body">
+                        <strong>${esc(pm.recommended_architecture || 'N/A')}</strong>
+                        ${pm.integration_pattern ? `<br>${esc(pm.integration_pattern)}` : ''}
+                        ${pm.recommended_model ? `<br>Model: <strong>${esc(pm.recommended_model)}</strong>` : ''}
+                        ${pm.why_not_fused ? `<br><em>${esc(pm.why_not_fused)}</em>` : ''}
+                    </div>
+                </div>`;
+            }
+
+            // Competitive risk
+            if (pm.competitive_risk || pm.competitive_angle) {
+                html += `<div class="prep-card">
+                    <div class="prep-card-label risk">Competitive Risk</div>
+                    <div class="prep-card-body">
+                        ${pm.competitive_risk ? `They may be evaluating: <strong>${esc(pm.competitive_risk)}</strong>` : ''}
+                        ${pm.competitive_angle ? `<br>Winning angle: ${esc(pm.competitive_angle)}` : ''}
+                    </div>
+                </div>`;
+            }
+
+            // Top 3 talking points
+            const talkingPoints = [];
+            if (pm.primary_reason) talkingPoints.push(pm.primary_reason);
+            if (pm.winning_angle && pm.winning_angle !== 'Unknown') talkingPoints.push(pm.winning_angle);
+            if (pm.secondary_reason) talkingPoints.push(`Secondary opportunity: ${pm.secondary_reason}`);
+            if (talkingPoints.length > 0) {
+                html += `<div class="prep-card">
+                    <div class="prep-card-label talk">Top Talking Points</div>
+                    <div class="prep-card-body"><ul>${talkingPoints.slice(0, 3).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
+                </div>`;
+            }
+
+            // What NOT to say
+            if (pm.key_objection && pm.key_objection !== 'Unknown') {
+                html += `<div class="prep-card">
+                    <div class="prep-card-label avoid">Likely Objection (Prepare For)</div>
+                    <div class="prep-card-body">${esc(pm.key_objection)}</div>
+                </div>`;
+            }
+
+            // Key signals to reference
+            const sigRefs = [];
+            const latestFunding = fundingSignals.latest_funding || {};
+            if (latestFunding.amount && latestFunding.amount !== 'Unknown') {
+                let fStr = `${latestFunding.series || 'Funding'}: ${latestFunding.amount}`;
+                if (latestFunding.date && latestFunding.date !== 'Unknown') fStr += ` (${latestFunding.date})`;
+                sigRefs.push(fStr + ' \u2014 mention budget unlocks new tooling');
+            }
+            const highJobs = (jobSignals.jobs_found || []).filter(j => j.intent_level === 'high');
+            if (highJobs.length > 0) {
+                sigRefs.push(`Hiring ${highJobs[0].title} \u2014 they\u2019re building this capability now`);
+            }
+            if (signals.needs_realtime) sigRefs.push('They need real-time \u2014 lead with Turbo v2.5 latency');
+            if (signals.language_count > 5) sigRefs.push(`${signals.language_count} languages detected \u2014 lead with Multilingual v2`);
+            (signals.existing_voice_stack || []).forEach(v => {
+                sigRefs.push(`Using ${v} \u2014 position EL as upgrade/complement`);
+            });
+
+            if (sigRefs.length > 0) {
+                html += `<div class="prep-card">
+                    <div class="prep-card-label signals">Key Signals to Reference</div>
+                    <div class="prep-card-body"><ul>${sigRefs.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>
+                </div>`;
+            }
+
+            return html;
+        }
+
+        // Detail tab switching
+        document.getElementById('detail-tabs').addEventListener('click', (e) => {
+            const tab = e.target.closest('.detail-tab');
+            if (!tab) return;
+            document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.detail-tab-panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('dtab-' + tab.dataset.dtab).classList.add('active');
+        });
+
         async function openProject(id) {
             currentProjectId = id;
             projectsView.style.display = 'none';
             projectDetail.classList.add('active');
             document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
 
-            const [projRes, planRes, logsRes] = await Promise.all([
+            // Reset to first tab
+            document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.detail-tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelector('[data-dtab="brief"]').classList.add('active');
+            document.getElementById('dtab-brief').classList.add('active');
+
+            const [projRes, logsRes] = await Promise.all([
                 fetch(`${API}/projects/${id}`),
-                fetch(`${API}/projects/${id}/plan`),
                 fetch(`${API}/projects/${id}/logs`),
             ]);
             const project = await projRes.json();
-            const plan = await planRes.json();
             const logs = await logsRes.json();
+            const bd = parseBriefData(project);
 
             document.getElementById('detail-name').textContent = project.client_name;
-            document.getElementById('detail-meta').textContent = `${project.industry} \u00b7 Created ${project.created_at.split(/[T ]/)[0]}`;
+            const savedDate = bd ? ' \u00b7 Saved ' + project.created_at.split(/[T ]/)[0] : '';
+            document.getElementById('detail-meta').textContent = `${project.industry}${savedDate}`;
             populateStageSelect(document.getElementById('detail-stage-select'), project.stage);
 
-            // Plan sections
-            document.getElementById('plan-integration').innerHTML = renderMarkdown(plan.integration_map);
-            document.getElementById('plan-stakeholders').innerHTML = renderMarkdown(plan.stakeholder_tracker);
-            document.getElementById('plan-questions').innerHTML = renderMarkdown(plan.open_questions);
-            document.getElementById('plan-risks').innerHTML = renderMarkdown(plan.risk_flags);
-            document.getElementById('plan-agenda').innerHTML = renderMarkdown(plan.next_meeting_agenda);
+            // Badges
+            document.getElementById('detail-badges').innerHTML = renderProjectBadges(bd);
 
-            // Emails - render as plain text (preserving formatting)
-            const techEmail = plan.technical_email || '';
-            const execEmail = plan.executive_email || '';
-            document.getElementById('plan-email-tech').textContent = techEmail || 'No email generated yet';
-            document.getElementById('plan-email-exec').textContent = execEmail || 'No email generated yet';
-            if (!techEmail) document.getElementById('plan-email-tech').style.color = '#444458';
-            else document.getElementById('plan-email-tech').style.color = '#b8b8c8';
-            if (!execEmail) document.getElementById('plan-email-exec').style.color = '#444458';
-            else document.getElementById('plan-email-exec').style.color = '#b8b8c8';
+            // Tab 1: Brief
+            if (bd && bd.brief) {
+                document.getElementById('detail-brief-body').innerHTML = renderMarkdown(bd.brief);
+            } else {
+                document.getElementById('detail-brief-body').innerHTML = '<span style="color:#444458">No brief saved. Generate a research brief and save it to populate this view.</span>';
+            }
+
+            // Tab 2: Technical Plan
+            const implContainer = document.getElementById('impl-phases');
+            const techEmpty = document.getElementById('techplan-empty');
+            if (bd && bd.implementation_plan && (bd.implementation_plan.phase_1 || bd.implementation_plan.phase_2 || bd.implementation_plan.phase_3)) {
+                implContainer.innerHTML = renderImplPhases(bd.implementation_plan);
+                implContainer.style.display = 'block';
+                techEmpty.style.display = 'none';
+            } else {
+                implContainer.innerHTML = '';
+                implContainer.style.display = 'none';
+                techEmpty.style.display = 'block';
+            }
+
+            // Tab 3: Call Prep
+            const prepContainer = document.getElementById('callprep-content');
+            const prepEmpty = document.getElementById('callprep-empty');
+            const prepHtml = renderCallPrep(bd);
+            if (prepHtml) {
+                prepContainer.innerHTML = prepHtml;
+                prepContainer.style.display = 'block';
+                prepEmpty.style.display = 'none';
+            } else {
+                prepContainer.innerHTML = '';
+                prepContainer.style.display = 'none';
+                prepEmpty.style.display = 'block';
+            }
 
             // Call logs
             if (logs.length === 0) {
@@ -817,7 +1379,7 @@
         });
 
         // Initial load
-        loadProjects();
+        loadSeedNextActions().then(() => loadProjects());
     </script>
 </body>
 </html>

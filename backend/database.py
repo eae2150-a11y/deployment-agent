@@ -7,7 +7,7 @@ from typing import Optional
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "deployment_agent.db")
 
-STAGES = ["Prospect", "Discovery", "Technical", "Pilot", "Legal & Procurement", "Deployment", "Live"]
+STAGES = ["Prospect", "Qualified", "POC Active", "POC Complete", "Negotiation", "Closed Won"]
 
 
 def _get_conn() -> sqlite3.Connection:
@@ -27,6 +27,7 @@ def init_db():
             client_name TEXT NOT NULL,
             industry TEXT NOT NULL,
             stage TEXT NOT NULL DEFAULT 'Prospect',
+            brief_data TEXT NOT NULL DEFAULT '',
             created_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
         CREATE TABLE IF NOT EXISTS call_logs (
@@ -50,19 +51,33 @@ def init_db():
         );
     """)
     conn.commit()
+    # Migrate: add brief_data column if missing (existing databases)
+    cols = [r[1] for r in conn.execute("PRAGMA table_info(projects)").fetchall()]
+    if "brief_data" not in cols:
+        conn.execute("ALTER TABLE projects ADD COLUMN brief_data TEXT NOT NULL DEFAULT ''")
+        conn.commit()
     conn.close()
 
 
-def create_project(client_name: str, industry: str, stage: str = "Prospect") -> dict:
+def create_project(client_name: str, industry: str, stage: str = "Prospect", brief_data: str = "") -> dict:
     conn = _get_conn()
     cursor = conn.execute(
-        "INSERT INTO projects (client_name, industry, stage) VALUES (?, ?, ?)",
-        (client_name, industry, stage),
+        "INSERT INTO projects (client_name, industry, stage, brief_data) VALUES (?, ?, ?, ?)",
+        (client_name, industry, stage, brief_data),
     )
     conn.commit()
     row = conn.execute("SELECT * FROM projects WHERE id = ?", (cursor.lastrowid,)).fetchone()
     conn.close()
     return dict(row)
+
+
+def update_project_brief_data(project_id: int, brief_data: str) -> Optional[dict]:
+    conn = _get_conn()
+    conn.execute("UPDATE projects SET brief_data = ? WHERE id = ?", (brief_data, project_id))
+    conn.commit()
+    row = conn.execute("SELECT * FROM projects WHERE id = ?", (project_id,)).fetchone()
+    conn.close()
+    return dict(row) if row else None
 
 
 def get_project(project_id: int) -> Optional[dict]:

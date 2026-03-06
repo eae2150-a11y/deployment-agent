@@ -1,28 +1,16 @@
 """Critic Agent - reviews all agent outputs for contradictions, weak reasoning, and gaps."""
 
-import os
+from backend.llm import chat
 
-import anthropic
-from dotenv import load_dotenv
+REVIEW_PROMPT = """Review these 5 research outputs for "{company_name}" (role: {role}).
 
-load_dotenv()
+Flag briefly:
+1. **Contradictions** between agents
+2. **Weak reasoning** - poorly supported claims
+3. **Critical gaps** the synthesis should call out
+4. **Confidence** - any agent overconfident given sparse data?
 
-anthropic_client = anthropic.AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-
-SYSTEM_PROMPT = """You are a rigorous internal reviewer and quality assurance analyst for an enterprise sales intelligence team.
-
-Your job is to find problems before they reach the client-facing brief. Be direct and specific. If everything looks solid, say so briefly — do not invent issues."""
-
-REVIEW_PROMPT = """Below are 5 research outputs prepared for an ElevenLabs Forward Deployed Engineer ahead of an enterprise engagement with "{company_name}" (target role: {role}).
-
-Review all 5 outputs and produce a brief quality report covering:
-
-1. **Contradictions** — Do any agents contradict each other? (e.g., one says the company is early-stage while another assumes enterprise maturity)
-2. **Weak reasoning** — Are any conclusions poorly supported or based on thin evidence? Flag specific claims.
-3. **Critical gaps** — What important information is missing that the synthesis should be careful about or call out?
-4. **Confidence assessment** — Review each agent's confidence note. Are they appropriately calibrated, or is any agent overconfident given sparse data?
-
-Be concise and specific. Reference which agent output contains each issue.
+Be concise. Reference which agent has each issue.
 
 --- Company Intel ---
 {company_intel}
@@ -51,20 +39,12 @@ async def review_outputs(
 ) -> str:
     """Review all 5 agent outputs and flag issues for the synthesis step."""
     prompt = REVIEW_PROMPT.format(
-        company_name=company_name,
-        role=role,
-        company_intel=company_intel,
-        use_cases=use_cases,
-        stakeholders=stakeholders,
-        objections=objections,
+        company_name=company_name, role=role,
+        company_intel=company_intel, use_cases=use_cases,
+        stakeholders=stakeholders, objections=objections,
         playbook=playbook,
     )
-
-    response = await anthropic_client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=1024,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}],
+    return await chat(
+        prompt=prompt, max_tokens=512,
+        system="You are a QA reviewer. Find real problems, be direct. Don't invent issues.",
     )
-
-    return response.content[0].text

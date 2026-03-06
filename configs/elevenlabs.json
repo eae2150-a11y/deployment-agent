@@ -1,13 +1,261 @@
 {
   "company": "ElevenLabs",
   "role": "Forward Deployed Engineer Strategist",
-  "product_context": "ElevenLabs is the leading AI voice technology company. Core products: Text-to-Speech API (ultra-realistic voices in 29 languages), Voice Cloning (professional and instant cloning), Voice Library (community marketplace), AI Dubbing (automatic video/audio translation), and Conversational AI agents. Key integrations: REST API, Python/JS SDKs, WebSocket streaming, partnerships with enterprise platforms. Used for content creation, customer support automation, accessibility, gaming, media localization, and IVR systems.",
+  "product_context": "ElevenLabs is the leading AI voice technology company. Core products: Text-to-Speech API (ultra-realistic voices in 32 languages, 3000+ voices, latency as low as 75ms), Voice Cloning (professional and instant cloning from 1 min of audio), Voice Library (community marketplace), AI Dubbing (automatic video/audio translation preserving original speaker voice, 29 languages), Conversational AI (voice agents for support, sales, onboarding), and Reader App (iOS/Android, reads any content aloud). Key integrations: REST API, Python/JS SDKs, WebSocket streaming, partnerships with enterprise platforms. Used for content creation, customer support automation, accessibility, gaming, media localization, and IVR systems.",
+  "products": {
+    "text_to_speech_api": {
+      "name": "Text to Speech API",
+      "description": "High-volume programmatic text-to-speech with ultra-realistic voices. 32 languages, 3000+ voices, latency as low as 75ms. Supports streaming and batch processing via REST API and WebSocket.",
+      "best_for": [
+        "Notifications and alerts at scale",
+        "Content platforms needing audio versions",
+        "E-learning and educational content",
+        "Accessibility features for apps and websites",
+        "News reading and article narration",
+        "Customer communications at scale",
+        "In-app voice experiences"
+      ],
+      "key_stats": {
+        "languages": 32,
+        "voices": "3000+",
+        "min_latency_ms": 75
+      }
+    },
+    "voice_cloning": {
+      "name": "Voice Cloning",
+      "description": "Clone any voice from as little as 1 minute of audio. Two tiers: Instant Clone (quick, good quality) and Professional Clone (studio-grade, requires 30+ minutes of clean audio). Create consistent brand voices or preserve creator voices across content.",
+      "best_for": [
+        "Media companies needing consistent narrator voices",
+        "Podcasters scaling content production",
+        "Gaming studios for character voices",
+        "Brand voice for marketing and communications",
+        "Dubbing own content while preserving voice identity",
+        "Audiobook production at scale"
+      ]
+    },
+    "dubbing_api": {
+      "name": "Dubbing API",
+      "description": "Automatically translate and re-voice video/audio content into 29 languages while preserving the original speaker's voice, tone, and emotion. End-to-end pipeline: transcription, translation, voice synthesis, and lip-sync.",
+      "best_for": [
+        "YouTube creators expanding to global audiences",
+        "Streaming platforms localizing content libraries",
+        "Corporate training videos for global teams",
+        "Marketing videos for international campaigns",
+        "Educational content localization",
+        "Podcast distribution in multiple languages"
+      ],
+      "key_stats": {
+        "languages": 29,
+        "preserves_speaker_voice": true
+      }
+    },
+    "conversational_ai": {
+      "name": "Conversational AI",
+      "description": "Build human-like voice agents for phone and web. Ultra-low latency voice interaction for customer support, sales, onboarding, and more. Integrates with existing telephony (SIP/PSTN), CRMs, and knowledge bases.",
+      "best_for": [
+        "IVR replacement and modernization",
+        "Tier 1 customer support deflection",
+        "Sales qualification and outbound calling",
+        "Appointment scheduling and reminders",
+        "Onboarding and guided experiences",
+        "After-hours support coverage"
+      ]
+    },
+    "reader_app": {
+      "name": "Reader App",
+      "description": "iOS and Android app that reads any content aloud with premium AI voices. Users can listen to articles, PDFs, newsletters, and web content. White-label and API options available for publishers.",
+      "best_for": [
+        "Publishers adding audio to articles",
+        "Newsletter companies offering listen mode",
+        "Content creators building audio experiences",
+        "Accessibility for reading-impaired users",
+        "Commuter-friendly content consumption"
+      ]
+    }
+  },
+  "competitors": {
+    "murf": {
+      "name": "Murf.ai",
+      "focus": "Studio-based TTS for marketing and e-learning",
+      "weakness": "Limited API capabilities, fewer languages, no real-time streaming"
+    },
+    "play_ht": {
+      "name": "Play.ht",
+      "focus": "Blog-to-audio and podcast generation",
+      "weakness": "Lower voice quality, limited enterprise features, no dubbing"
+    },
+    "resemble_ai": {
+      "name": "Resemble.ai",
+      "focus": "Voice cloning and speech-to-speech",
+      "weakness": "Smaller voice library, less language coverage, niche market"
+    },
+    "wellsaid": {
+      "name": "WellSaid Labs",
+      "focus": "Enterprise TTS for training and corporate video",
+      "weakness": "Limited to English, no dubbing, no conversational AI"
+    },
+    "lovo_ai": {
+      "name": "Lovo.ai",
+      "focus": "Video voiceover and content creation",
+      "weakness": "Consumer-focused, limited API, fewer enterprise integrations"
+    },
+    "speechify": {
+      "name": "Speechify",
+      "focus": "Consumer reading app and text-to-speech",
+      "weakness": "Consumer product, limited API/enterprise offering, no voice cloning"
+    },
+    "deepgram": {
+      "name": "Deepgram",
+      "focus": "Speech-to-text (ASR) with some TTS capabilities",
+      "weakness": "Primarily STT company, TTS is newer and less mature, no dubbing or cloning"
+    },
+    "azure_tts": {
+      "name": "Azure Cognitive Services TTS",
+      "focus": "Enterprise TTS within Microsoft ecosystem",
+      "weakness": "Less natural voice quality, complex pricing, requires Azure commitment, no dubbing"
+    }
+  },
+  "differentiators": [
+    "Best-in-class voice quality — consistently rated most natural-sounding AI voices",
+    "Ultra-low latency (75ms) enabling real-time conversational use cases",
+    "Broadest language coverage (32 languages) with native-quality output",
+    "Voice cloning fidelity — Professional Clone captures emotion, cadence, and accent",
+    "End-to-end dubbing pipeline — no other vendor offers transcription + translation + voice preservation",
+    "Simple, developer-friendly API with generous free tier for evaluation",
+    "Scales from prototype to millions of characters per month without architecture changes",
+    "SOC 2 Type II compliant with enterprise security features"
+  ],
+  "objection_handling": {
+    "cost": {
+      "objection": "ElevenLabs is more expensive than alternatives",
+      "response": "Our per-character pricing is competitive at scale, and the quality difference eliminates the need for manual audio editing or re-recording. Customers typically see 60-80% reduction in total audio production cost. We offer volume discounts and custom enterprise pricing."
+    },
+    "integration_complexity": {
+      "objection": "Integration seems complex / we don't have engineering bandwidth",
+      "response": "Our API is designed for simplicity — most integrations take 2-3 days, not weeks. We provide SDKs for Python, JavaScript, and other languages, plus a dedicated FDE to support your integration. Many customers go from first API call to production in under a week."
+    },
+    "voice_ownership": {
+      "objection": "Who owns the cloned voice? What about IP and rights?",
+      "response": "You retain full ownership of any voice you clone. We require consent verification for voice cloning to protect all parties. Our terms explicitly state that generated audio and cloned voice models belong to the customer. We're the industry leader in ethical voice AI practices."
+    },
+    "data_privacy": {
+      "objection": "Where is our data stored? GDPR/compliance concerns",
+      "response": "We're SOC 2 Type II compliant. Data can be processed in US or EU regions. We offer data processing agreements (DPAs) and can accommodate specific data residency requirements for enterprise customers. No training on customer data without explicit opt-in."
+    },
+    "quality_concerns": {
+      "objection": "AI voices still sound robotic / not good enough for our brand",
+      "response": "We encourage a blind listening test — our voices are regularly indistinguishable from human recordings in A/B tests. We can run a proof-of-concept with your actual content so you can evaluate quality firsthand before any commitment."
+    }
+  },
+  "customer_stories": {
+    "content_platform": {
+      "use_case": "TTS API for article narration",
+      "example": "A major news publisher uses ElevenLabs to auto-generate audio for 500+ articles daily, increasing engagement by 40% and time-on-site by 25%."
+    },
+    "gaming": {
+      "use_case": "Voice Cloning for game characters",
+      "example": "An indie game studio cloned 12 unique character voices, reducing voiceover production time from 6 months to 3 weeks and cutting costs by 90%."
+    },
+    "education": {
+      "use_case": "TTS API for e-learning modules",
+      "example": "A global e-learning platform generates course narration in 15 languages from a single English script, launching localized courses 10x faster."
+    },
+    "media_localization": {
+      "use_case": "Dubbing API for video content",
+      "example": "A YouTube creator with 2M subscribers uses Dubbing API to auto-translate videos into 8 languages, growing international viewership by 300%."
+    },
+    "customer_support": {
+      "use_case": "Conversational AI for IVR replacement",
+      "example": "A telecom company replaced their legacy IVR with ElevenLabs Conversational AI, deflecting 45% of Tier 1 calls and improving CSAT from 6.1 to 8.3."
+    },
+    "publishing": {
+      "use_case": "Reader App integration for newsletters",
+      "example": "A newsletter with 200K subscribers added a 'Listen' button powered by ElevenLabs, seeing 35% of readers switch to audio format during commute hours."
+    }
+  },
+  "models": {
+    "eleven_multilingual_v2": {
+      "name": "Eleven Multilingual v2",
+      "description": "Highest quality multilingual TTS model. 29 languages with native-quality output.",
+      "use_cases": ["Content generation", "Dubbing", "Audiobooks", "E-learning localization"]
+    },
+    "eleven_turbo_v2_5": {
+      "name": "Eleven Turbo v2.5",
+      "description": "Lowest latency model (~75ms). Optimized for real-time conversational use cases.",
+      "use_cases": ["Voice agents", "Conversational AI", "Live interactions", "IVR replacement"]
+    },
+    "eleven_english_v2": {
+      "name": "Eleven English v2",
+      "description": "Highest quality English-only model. Best for English-only deployments where quality is paramount.",
+      "use_cases": ["English audiobooks", "Premium English narration", "Brand voice content"]
+    },
+    "scribe_v2": {
+      "name": "Scribe v2",
+      "description": "Batch transcription model for subtitling, captioning, and offline speech-to-text.",
+      "use_cases": ["Subtitling", "Captioning", "Batch transcription", "Content indexing"]
+    },
+    "scribe_v2_realtime": {
+      "name": "Scribe v2 Realtime",
+      "description": "Ultra-low latency live STT with VAD commit. Ideal for voice agent pipelines needing live transcription.",
+      "use_cases": ["Voice agent STT", "Live transcription", "Real-time captioning", "Advanced Cascaded architecture"]
+    }
+  },
+  "integration_patterns": {
+    "rest_api_batch": {
+      "name": "REST API (batch TTS)",
+      "description": "Simplest integration. Async content generation via HTTP POST. Best for non-real-time use cases.",
+      "latency": "Seconds",
+      "complexity": "Low"
+    },
+    "streaming_api": {
+      "name": "Streaming API",
+      "description": "Low latency real-time TTS via chunked HTTP streaming. Good for interactive but not conversational use cases.",
+      "latency": "Sub-second",
+      "complexity": "Low-Medium"
+    },
+    "websocket_scribe_realtime": {
+      "name": "WebSocket (Scribe v2 Realtime)",
+      "description": "Live transcription via WebSocket. Use in Advanced Cascaded architecture for voice agent STT.",
+      "latency": "Ultra-low",
+      "complexity": "Medium"
+    },
+    "elevenagents_platform": {
+      "name": "ElevenAgents Platform",
+      "description": "No-code/low-code agent builder with native Twilio/phone integration. Fastest path to voice agent deployment.",
+      "latency": "Ultra-low",
+      "complexity": "Low"
+    },
+    "react_sdk": {
+      "name": "React SDK (@elevenlabs/react)",
+      "description": "Client-side streaming with single-use token auth. Best for web apps needing in-browser voice.",
+      "latency": "Sub-second",
+      "complexity": "Low-Medium"
+    }
+  },
+  "known_integrations": {
+    "twilio": {
+      "name": "Twilio",
+      "type": "Native phone/IVR integration",
+      "description": "Native SIP/PSTN integration for voice agents. Direct replacement for Twilio + Polly/Google TTS stacks."
+    },
+    "chrome_ai_translator": {
+      "name": "Chrome AI Translator API",
+      "type": "Browser integration",
+      "description": "Client-side translation integration for web-based dubbing and localization workflows."
+    },
+    "webhooks": {
+      "name": "Standard Webhooks",
+      "type": "Event-driven integration",
+      "description": "Webhook support for agent handoffs, status callbacks, and event-driven audio generation."
+    }
+  },
   "deal_stages": [
-    "Discovery",
-    "Technical Evaluation",
-    "Pilot",
+    "Prospect",
+    "Qualified",
+    "POC Active",
+    "POC Complete",
     "Negotiation",
-    "Deployment"
+    "Closed Won"
   ],
   "question_banks": {
     "Discovery": [

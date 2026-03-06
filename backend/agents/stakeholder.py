@@ -3,78 +3,58 @@
 import asyncio
 import os
 
-import anthropic
 from dotenv import load_dotenv
 from tavily import TavilyClient
+
+from backend.llm import chat
 
 load_dotenv()
 
 tavily_client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
-anthropic_client = anthropic.AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
-SYSTEM_PROMPT = """You are an enterprise sales strategist who specializes in mapping buying committees and identifying champions vs blockers in complex B2B deals.
+SYNTHESIS_PROMPT = """ElevenLabs context: {product_context}
 
-This analysis will be used by a Forward Deployed Engineer at ElevenLabs preparing for a high-stakes enterprise client engagement. Accuracy matters more than comprehensiveness. Flag uncertainty rather than speculate."""
+From search results about "{company_name}" (role: {role}), map the buying committee for ElevenLabs voice AI.
 
-SYNTHESIS_PROMPT = """Product context for ElevenLabs (your company):
-{product_context}
+{search_data}
 
-Based on the following search results about the prospect "{company_name}" and the target role "{role}", map the key stakeholders involved in a purchasing decision for ElevenLabs voice AI technology.
+Identify:
+1. **Economic Buyer** - Who holds budget? Title and priorities.
+2. **Champion** - Internal advocate who uses/promotes the product daily.
+3. **Likely Blocker** - Who resists adoption and why.
 
-Search results:
-
---- Customers ---
-{customer_results}
-
---- Buyer Persona ---
-{persona_results}
-
---- Enterprise Sales ---
-{sales_results}
-
-Think step by step. First note what the search results reveal about this company's organizational structure and decision-making, then what is uncertain, then draw your conclusions about the buying committee.
-
-Identify and describe:
-1. **Economic Buyer** — Who holds the budget and makes the final purchasing decision? What is their likely title and what do they care about?
-2. **Day-to-Day Champion** — Who would be the internal advocate that uses and promotes the product daily? What motivates them?
-3. **Likely Blocker** — Who is most likely to resist or block adoption? Why would they object, and what is their role?
-
-Be specific to this company and role.
-
-End with a brief "**Confidence note:**" flagging any areas where data was sparse, contradictory, or uncertain."""
+Be specific to this company. End with "**Confidence note:**" on uncertain areas."""
 
 
 async def _search(query: str) -> str:
-    """Run a single Tavily search in a thread (Tavily client is synchronous)."""
     loop = asyncio.get_event_loop()
     response = await loop.run_in_executor(None, lambda: tavily_client.search(query, max_results=5))
-    return "\n".join(
-        f"- {result['title']}: {result['content']}" for result in response["results"]
-    )
+    return "\n".join(f"- {r['title']}: {r['content']}" for r in response["results"])
 
 
-async def research_stakeholders(company_name: str, role: str, product_context: str = "") -> str:
-    """Research stakeholders using parallel Tavily searches and Claude synthesis."""
-    customer_results, persona_results, sales_results = await asyncio.gather(
+async def fetch_stakeholder_data(company_name: str, role: str) -> dict:
+    """Tavily-only: fetch search data for stakeholder research."""
+    results = await asyncio.gather(
         _search(f"{company_name} customers"),
         _search(f"{company_name} buyer persona"),
         _search(f"{company_name} enterprise sales"),
     )
+    return {"customers": results[0], "persona": results[1], "sales": results[2]}
 
+
+async def synthesize_stakeholders(company_name: str, role: str, data: dict, product_context: str) -> str:
+    """Claude-only: synthesize stakeholder research."""
+    search_data = "\n".join(f"--- {k.title()} ---\n{v}" for k, v in data.items())
     prompt = SYNTHESIS_PROMPT.format(
-        product_context=product_context,
-        company_name=company_name,
-        role=role,
-        customer_results=customer_results,
-        persona_results=persona_results,
-        sales_results=sales_results,
+        product_context=product_context, company_name=company_name,
+        role=role, search_data=search_data,
+    )
+    return await chat(
+        prompt=prompt, max_tokens=768,
+        system="You are an enterprise sales strategist. Map buying committees and identify champions vs blockers.",
     )
 
-    response = await anthropic_client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=1024,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}],
-    )
 
-    return response.content[0].text
+async def research_stakeholders(company_name: str, role: str, product_context: str = "") -> str:
+    data = await fetch_stakeholder_data(company_name, role)
+    return await synthesize_stakeholders(company_name, role, data, product_context)
